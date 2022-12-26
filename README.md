@@ -22,5 +22,20 @@ child’s changing growth and development milestones.
 I believe that those parents who are highly concerned about their child’s overall well-being spend a lot of money and
 time to achieve that. That is why this mobile app could be a profitable and successful startup.
 
+### Core functionalities
+**Web application:**
+* Landing page - the project description and main features.
+* Subscription and payment functionalities.
+
+**Mobile application:**
+* Views for modules and sub-modules, with specific functionalities.
+* Notification functionality for reminders and micro-learning.
+
+
+## Contents
+* [Functional Requirements](https://github.com/OlgaS40/parent-assist-app/wiki/Functional-Requirments)
+* [Non-functional Requirements](https://github.com/OlgaS40/parent-assist-app/wiki/Non-Functional-Requirements)
+* [Backlog](https://github.com/OlgaS40/parent-assist-app/issues)
+
 
  
