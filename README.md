@@ -30,6 +30,7 @@ time to achieve that. That is why this mobile app could be a profitable and succ
 **Mobile application:**
 * Views for modules and sub-modules, with specific functionalities.
 * Notification functionality for reminders and micro-learning.
+* Subscription and payment functionalities
 
 
 ## Contents
