@@ -59,6 +59,7 @@ time to achieve that. That is why this mobile app could be a profitable and succ
 * [Non-functional Requirements](https://github.com/OlgaS40/parent-assist-app/wiki/Non-Functional-Requirements)
 * [Backlog](https://github.com/OlgaS40/parent-assist-app/issues)
 * [Wiki](https://github.com/OlgaS40/parent-assist-app/wiki)
+* [GitHub Pages](https://olgas40.github.io/parent-assist-app/)
 
 
  
