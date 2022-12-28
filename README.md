@@ -32,6 +32,27 @@ time to achieve that. That is why this mobile app could be a profitable and succ
 * Notification functionality for reminders and micro-learning.
 * Subscription and payment functionalities
 
+### Current Progress
+**Done**
+* Orientation
+
+**In Progress**
+* Documentation
+
+**Future**
+* Plans
+* Design / UX / UI
+* Backend
+* Efficient Communication
+* Frontend
+* QA / Unit Testing
+* Soft Skills
+* Mobile
+* Project Management / Agile
+* DevOps
+* IoT
+* Public Speaking
+
 
 ## Links
 * [Functional Requirements](https://github.com/OlgaS40/parent-assist-app/wiki/Functional-Requirments)
