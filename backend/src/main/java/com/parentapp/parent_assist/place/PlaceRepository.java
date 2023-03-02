@@ -1,7 +1,0 @@
-package com.parentapp.parent_assist.place;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-
-public interface PlaceRepository extends JpaRepository<Place, String> {
-}
