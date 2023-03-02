@@ -1,0 +1,7 @@
+<h1 mat-dialog-title>Are you sure you want to delete User:
+    <br>
+    <b>{{user.username}}</b> ?</h1>
+  <div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]>Cancel</button>
+    <button class="delete-button" color="warn" mat-button [mat-dialog-close]="true">Delete</button>
+  </div>

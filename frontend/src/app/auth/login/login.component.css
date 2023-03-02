@@ -1,0 +1,28 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .login-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-width: 400px;
+    max-width: 600px;
+    margin-top: 10%;
+  }
+  
+  mat-form-field {
+    width: 250px;
+  }
+  
+  button {
+    margin: 2rem;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+  }

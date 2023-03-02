@@ -1,0 +1,26 @@
+<!-- topnavbar -->
+<div class="topnav shadow p-1">
+    <a>Admin Panel</a>
+    <span class="menu" (click)="openNav(true)"><i class="bi bi-list"></i></span>
+</div>
+<!-- topnavbar -->
+<!-- left sidebar nav  -->
+
+<div  class="sidebar shadow p-2"  id="sidebar" [ngStyle]="responsiveMenu">
+    <ul>
+        <li><a routerLink="/admin-panel"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+        <li>
+            <a routerLink="/admin-panel/products"><i class="bi bi-bag"></i> Products <i class="bi bi-arrow-right icon"></i></a>
+            <ul class="dropdow-container">
+                <li><a href="#">Child development</a></li>
+                <li><a href="#">Child health and care</a></li>
+            </ul>
+        </li>
+        <li><a routerLink="/admin-panel/subscriptions"><i class="bi bi-clipboard-data"></i> Subscriptions</a></li>
+        <li><a routerLink="/admin-panel/cash"><i class="bi bi-currency-dollar"></i> Cash </a></li>
+        <li><a routerLink="/admin-panel/users"><i class="bi bi-person-gear"></i> User</a></li>
+        <li><a href="#"><i class="bi bi-box-arrow-left"></i> Logout</a></li>
+
+    </ul>
+</div>
+<!-- left sidebar nav  -->
