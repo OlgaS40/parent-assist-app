@@ -30,9 +30,9 @@ public class WebSecurityConfig {
         successHandler.setDefaultTargetUrl(this.adminServer.getContextPath() + "/");
 
         http
-                .authorizeRequests()
-                .dispatcherTypeMatchers(HttpMethod.valueOf(this.adminServer.getContextPath() + "/assets/**")).permitAll()
-                .dispatcherTypeMatchers(HttpMethod.valueOf(this.adminServer.getContextPath() + "/login")).permitAll()
+                .authorizeHttpRequests()
+                .requestMatchers(this.adminServer.getContextPath() + "/assets/**").permitAll()
+                .requestMatchers(this.adminServer.getContextPath() + "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

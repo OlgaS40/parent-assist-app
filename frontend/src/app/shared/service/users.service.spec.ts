@@ -20,12 +20,12 @@ describe('UsersService', () => {
     // Verify that there are no outstanding HTTP requests after each test
     httpMock.verify();
   });
-  
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
   it('should retrieve data from the backend API via GET', () => {
-    // Define the mock response data
+    // Define the mock authResponse data
     const mockData = [
       {
         "id": "24eb63e7-d14a-4a59-99f1-8641d1f7bf08",
@@ -80,9 +80,9 @@ describe('UsersService', () => {
     }
     ];
 
-    // Call the getAll() method on the service and subscribe to the response
+    // Call the getAll() method on the service and subscribe to the authResponse
     service.getAllUsers().subscribe((data) => {
-      // Assert that the response data matches the mock data
+      // Assert that the authResponse data matches the mock data
       expect(data).toEqual(mockData);
     });
 
@@ -112,9 +112,9 @@ describe('UsersService', () => {
   });
 
   it('should create a user', () => {
-    const testUser = { id:'fb08ea67-7719-406a-b21e-dfccfc6db2ee', 
-    username: 'Test User', 
-    email: 'testUser@gmail.com', 
+    const testUser = { id:'fb08ea67-7719-406a-b21e-dfccfc6db2ee',
+    username: 'Test User',
+    email: 'testUser@gmail.com',
     password: 'password' };
 
     // Call the service's create() method
@@ -133,7 +133,7 @@ describe('UsersService', () => {
 
   it('should update a user', () => {
     const testUserId = 'fb08ea67-7719-406a-b21e-dfccfc6db2ee';
-    const testUser = { id: testUserId, username: 'Test User Updated',email: 'testUser@gmail.com', 
+    const testUser = { id: testUserId, username: 'Test User Updated',email: 'testUser@gmail.com',
     password: 'password' };
 
     // Call the service's update() method
@@ -156,7 +156,7 @@ describe('UsersService', () => {
     // Call the service's delete() method
     service.deleteUser(testUserId).subscribe();
 
-    // Set up a mock HTTP request to return a successful response
+    // Set up a mock HTTP request to return a successful authResponse
     const req = httpMock.expectOne(`${environment.apiUrl}users/${testUserId}`);
     expect(req.request.method).toEqual('DELETE');
     req.flush(null, { status: 204, statusText: 'No Content' });

@@ -1,11 +1,7 @@
 package com.parentapp.backend.auth.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
+
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
