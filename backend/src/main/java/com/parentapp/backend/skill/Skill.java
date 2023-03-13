@@ -7,11 +7,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Builder
 @Getter
 @Setter
 public class Skill {

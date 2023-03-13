@@ -266,7 +266,8 @@ create table if not exists parent_assist.role
 (
     id   varchar(255) not null
         primary key,
-    name varchar(255)
+    name varchar(255),
+    reqName varchar(255)
 );
 
 alter table parent_assist.role

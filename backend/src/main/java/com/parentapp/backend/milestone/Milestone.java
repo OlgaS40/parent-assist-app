@@ -4,22 +4,15 @@ import com.parentapp.backend.activity.Activity;
 import com.parentapp.backend.activity.AgeUnit;
 import com.parentapp.backend.event_milestone.EventMilestone;
 import com.parentapp.backend.skill.Skill;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-
-
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = false)
 @Getter
 @Setter
 public class Milestone {

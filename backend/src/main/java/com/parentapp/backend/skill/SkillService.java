@@ -1,10 +1,10 @@
 package com.parentapp.backend.skill;
 
 import com.parentapp.backend.util.NotFoundException;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 
 @Service
@@ -17,9 +17,9 @@ public class SkillService {
     }
 
     public List<SkillDTO> findAll() {
-        final List<Skill> skillsses = skillRepository.findAll(Sort.by("id"));
-        return skillsses.stream()
-                .map((skills) -> mapToDTO(skills, new SkillDTO()))
+        final List<Skill> skills = skillRepository.findAll();
+        return skills.stream()
+                .map((skill) -> mapToDTO(skill, new SkillDTO()))
                 .collect(Collectors.toList());
     }
 

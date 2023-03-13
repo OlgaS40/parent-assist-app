@@ -1,10 +1,10 @@
 package com.parentapp.backend.child;
 
 import com.parentapp.backend.util.NotFoundException;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 
 @Service
@@ -17,7 +17,7 @@ public class ChildService {
     }
 
     public List<ChildDTO> findAll() {
-        final List<Child> children = childRepository.findAll(Sort.by("id"));
+        final List<Child> children = childRepository.findAll();
         return children.stream()
                 .map((child) -> mapToDTO(child, new ChildDTO()))
                 .collect(Collectors.toList());

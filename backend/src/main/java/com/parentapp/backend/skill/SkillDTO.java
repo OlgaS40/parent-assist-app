@@ -1,10 +1,12 @@
 package com.parentapp.backend.skill;
 
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Builder
 @Getter
 @Setter
 public class SkillDTO {

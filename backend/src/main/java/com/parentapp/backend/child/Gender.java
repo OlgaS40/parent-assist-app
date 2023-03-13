@@ -3,7 +3,9 @@ package com.parentapp.backend.child;
 
 public enum Gender {
 
-    BOY,
-    GIRL
+    BOY("boy"),
+    GIRL("girl");
 
+    Gender(String gender) {
+    }
 }

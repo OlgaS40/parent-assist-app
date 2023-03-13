@@ -1,22 +1,21 @@
 package com.parentapp.backend.users;
 
+import com.parentapp.backend.auth.model.Role;
 import com.parentapp.backend.auth.model.User;
+import com.parentapp.backend.auth.repository.RoleRepository;
 import com.parentapp.backend.auth.repository.UserRepository;
 import com.parentapp.backend.parent.Parent;
 import com.parentapp.backend.parent.ParentRepository;
-import com.parentapp.backend.auth.model.Role;
-import com.parentapp.backend.auth.repository.RoleRepository;
 import com.parentapp.backend.util.NotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 
-@Transactional
 @Service
 public class UserService {
 
@@ -30,10 +29,12 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.parentRepository = parentRepository;
     }
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 
-    public List<UserDTO> findAll() {
-        final List<User> users = userRepository.findAll(Sort.by("id"));
-        return users.stream()
+    public List<UserDTO> findAllAsDTO() {
+        return findAll().stream()
                 .map((user) -> mapToDTO(user, new UserDTO()))
                 .collect(Collectors.toList());
     }
@@ -43,21 +44,21 @@ public class UserService {
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .orElseThrow(NotFoundException::new);
     }
-
+    @Transactional
     public String create(final UserDTO userDTO) {
         final User user = new User();
         mapToEntity(userDTO, user);
         user.setId(userDTO.getId());
         return userRepository.save(user).getId();
     }
-
+    @Transactional
     public void update(final String id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(userDTO, user);
         userRepository.save(user);
     }
-
+    @Transactional
     public void delete(final String id) {
         userRepository.deleteById(id);
     }
@@ -67,7 +68,7 @@ public class UserService {
         userDTO.setUsername(user.getUsername());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
-        userDTO.setParentId(user.getParent().getId());
+        userDTO.setParentId(user.getParent() == null ? null : user.getParent().getId());
         userDTO.setUserRole(user.getUserRole() == null ? null : user.getUserRole().stream()
                 .map(Role::getName)
                 .collect(Collectors.toSet()));
@@ -79,10 +80,10 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
-        final List<Role> userRoles = roleRepository.findAllById(
+        final List<Role> userRoles =
                 userDTO.getUserRole() == null ? Collections.emptyList() : userDTO.getUserRole().stream()
-                        .map(roleName -> roleRepository.findByName(roleName).orElseThrow(NotFoundException::new).getId())
-                        .collect(Collectors.toSet()));
+                        .map(roleName -> roleRepository.findByName(roleName).orElseThrow(NotFoundException::new))
+                        .toList();
         if (userRoles.size() != (userDTO.getUserRole() == null ? 0 : userDTO.getUserRole().size())) {
             throw new NotFoundException("one of userRoles not found");
         }

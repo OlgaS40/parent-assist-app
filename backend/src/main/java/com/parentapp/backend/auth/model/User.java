@@ -3,8 +3,7 @@ package com.parentapp.backend.auth.model;
 import com.parentapp.backend.parent.Parent;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Set;
@@ -18,6 +17,10 @@ import java.util.Set;
         })
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Builder
 public class User {
 
     @Id
@@ -47,14 +50,5 @@ public class User {
     @OneToOne
     @JoinColumn(name = "parent_id")
     private Parent parent;
-
-    public User() {
-    }
-
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
 
 }

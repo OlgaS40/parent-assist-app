@@ -3,7 +3,6 @@ package com.parentapp.backend.milestone;
 import com.parentapp.backend.activity.Activity;
 import com.parentapp.backend.activity.ActivityRepository;
 import com.parentapp.backend.util.NotFoundException;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class MilestoneService {
     }
 
     public List<MilestoneDTO> findAll() {
-        final List<Milestone> milestones = milestoneRepository.findAll(Sort.by("id"));
+        final List<Milestone> milestones = milestoneRepository.findAll();
         return milestones.stream()
                 .map((milestone) -> mapToDTO(milestone, new MilestoneDTO()))
                 .collect(Collectors.toList());
@@ -51,28 +50,29 @@ public class MilestoneService {
     }
 
     private MilestoneDTO mapToDTO(final Milestone milestone,
-                                    final MilestoneDTO milestoneDTO) {
+                                  final MilestoneDTO milestoneDTO) {
         milestoneDTO.setId(milestone.getId());
         milestoneDTO.setName(milestone.getName());
         milestoneDTO.setDescription(milestone.getDescription());
         milestoneDTO.setAgeUnit(milestone.getAgeUnit());
         milestoneDTO.setAgeFrom(milestone.getAgeFrom());
-        milestoneDTO.setAgeTo(milestoneDTO.getAgeTo());
-        milestoneDTO.setActivities(milestone.getMilestoneActivities().stream()
+        milestoneDTO.setAgeTo(milestone.getAgeTo());
+        milestoneDTO.setActivities(milestone.getMilestoneActivities() == null ?
+                null : milestone.getMilestoneActivities().stream()
                 .map(Activity::getId)
                 .collect(Collectors.toSet()));
         return milestoneDTO;
     }
 
     private Milestone mapToEntity(final MilestoneDTO milestoneDTO,
-                                    final Milestone milestone) {
+                                  final Milestone milestone) {
         milestone.setId(milestoneDTO.getId());
         milestone.setName(milestoneDTO.getName());
         milestone.setDescription(milestoneDTO.getDescription());
         milestone.setAgeUnit(milestoneDTO.getAgeUnit());
         milestone.setAgeFrom(milestoneDTO.getAgeFrom());
         milestone.setAgeTo(milestoneDTO.getAgeTo());
-        milestone.setMilestoneActivities(milestoneDTO.getActivities().stream()
+        milestone.setMilestoneActivities(milestoneDTO.getActivities()==null ? null: milestoneDTO.getActivities().stream()
                 .map(id -> activityRepository.findById(id).orElseThrow(NotFoundException::new))
                 .collect(Collectors.toSet()));
         return milestone;

@@ -40,9 +40,9 @@ public class ActivityService {
     }
 
     public List<ActivityDTO> findAll() {
-        final List<Activity> activitiesses = activityRepository.findAll(Sort.by("id"));
-        return activitiesses.stream()
-                .map((activities) -> mapToDTO(activities, new ActivityDTO()))
+        final List<Activity> activities = activityRepository.findAll(Sort.by("id"));
+        return activities.stream()
+                .map((activity) -> mapToDTO(activity, new ActivityDTO()))
                 .collect(Collectors.toList());
     }
 
@@ -107,7 +107,7 @@ public class ActivityService {
         final List<Milestone> activitiesMilestones = milestoneRepository.findAllById(
                 activityDTO.getActivityMilestones() == null ? Collections.emptyList() : activityDTO.getActivityMilestones());
         if (activitiesMilestones.size() != (activityDTO.getActivityMilestones() == null ? 0 : activityDTO.getActivityMilestones().size())) {
-            throw new NotFoundException("one of activitiesMilestoness not found");
+            throw new NotFoundException("one of activitiesMilestones not found");
         }
         activity.setActivityMilestones(new HashSet<>(activitiesMilestones));
         final List<MaterialToy> activityMaterials = materialToyRepository.findAllById(
@@ -122,12 +122,12 @@ public class ActivityService {
             throw new NotFoundException("one of activityPlaces not found");
         }
         activity.setActivityPlaces(new HashSet<>(activityPlaces));
-        final List<Skill> activitySkillsses = skillRepository.findAllById(
+        final List<Skill> activitySkills = skillRepository.findAllById(
                 activityDTO.getActivitySkills() == null ? Collections.emptyList() : activityDTO.getActivitySkills());
-        if (activitySkillsses.size() != (activityDTO.getActivitySkills() == null ? 0 : activityDTO.getActivitySkills().size())) {
-            throw new NotFoundException("one of activitySkillss not found");
+        if (activitySkills.size() != (activityDTO.getActivitySkills() == null ? 0 : activityDTO.getActivitySkills().size())) {
+            throw new NotFoundException("one of activitySkills not found");
         }
-        activity.setActivitySkills(new HashSet<>(activitySkillsses));
+        activity.setActivitySkills(new HashSet<>(activitySkills));
         return activity;
     }
 
