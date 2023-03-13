@@ -3,15 +3,17 @@ package com.parentapp.backend.users;
 import com.parentapp.backend.auth.model.URole;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.List;
-import java.util.Set;
+import lombok.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Set;
 
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Builder
 public class UserDTO {
 
     @Size(max = 255)
