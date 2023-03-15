@@ -1,28 +1,28 @@
-package com.parentapp.backend.subscription;
+package com.parentapp.subscription;
 
-import com.parentapp.backend.child.Child;
-import com.parentapp.backend.child.ChildRepository;
-import com.parentapp.backend.util.NotFoundException;
+import com.parentapp.child.Child;
+import com.parentapp.child.ChildRepository;
+import com.parentapp.util.NotFoundException;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 
 @Service
-public class SubscriptionService {
+public class SubscriptionServiceImpl implements SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final ChildRepository childRepository;
 
-    public SubscriptionService(final SubscriptionRepository subscriptionRepository,
-            final ChildRepository childRepository) {
+    public SubscriptionServiceImpl(final SubscriptionRepository subscriptionRepository,
+                                   final ChildRepository childRepository) {
         this.subscriptionRepository = subscriptionRepository;
         this.childRepository = childRepository;
     }
 
     public List<SubscriptionDTO> findAll() {
-        final List<Subscription> subscriptions = subscriptionRepository.findAll(Sort.by("id"));
+        final List<Subscription> subscriptions = subscriptionRepository.findAll();
         return subscriptions.stream()
                 .map((subscription) -> mapToDTO(subscription, new SubscriptionDTO()))
                 .collect(Collectors.toList());
@@ -53,7 +53,7 @@ public class SubscriptionService {
     }
 
     private SubscriptionDTO mapToDTO(final Subscription subscription,
-            final SubscriptionDTO subscriptionDTO) {
+                                     final SubscriptionDTO subscriptionDTO) {
         subscriptionDTO.setId(subscription.getId());
         subscriptionDTO.setStart(subscription.getStart());
         subscriptionDTO.setEnd(subscription.getEnd());
@@ -62,7 +62,7 @@ public class SubscriptionService {
     }
 
     private Subscription mapToEntity(final SubscriptionDTO subscriptionDTO,
-            final Subscription subscription) {
+                                     final Subscription subscription) {
         subscription.setStart(subscriptionDTO.getStart());
         subscription.setEnd(subscriptionDTO.getEnd());
         final Child childId = subscriptionDTO.getChildId() == null ? null : childRepository.findById(subscriptionDTO.getChildId())
