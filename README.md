@@ -35,17 +35,18 @@ time to achieve that. That is why this mobile app could be a profitable and succ
 ### Current Progress
 **Done**
 * Orientation
-
-**In Progress**
 * Documentation
-
-**Future**
 * Plans
 * Design / UX / UI
 * Backend
 * Efficient Communication
 * Frontend
+
+**In Progress**
 * QA / Unit Testing
+
+**Future**
+
 * Soft Skills
 * Mobile
 * Project Management / Agile
