@@ -17,8 +17,8 @@ import java.util.Set;
         })
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class User {
@@ -39,6 +39,8 @@ public class User {
     @Column(nullable = false, length = 120)
     private String password;
 
+    @Column
+    private boolean enabled;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
@@ -50,5 +52,4 @@ public class User {
     @OneToOne
     @JoinColumn(name = "parent_id")
     private Parent parent;
-
 }

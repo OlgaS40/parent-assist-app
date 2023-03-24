@@ -18,18 +18,20 @@ public class UserDetailsImpl implements UserDetails {
     private String username;
     private String email;
     private String password;
-    private boolean locked;
+    private boolean isEnabled;
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(String userId,
                            String username,
                            String email,
                            String password,
+                           boolean isEnabled,
                            Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isEnabled = isEnabled;
         this.authorities = authorities;
     }
     public static UserDetailsImpl build(User user) {
@@ -41,6 +43,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.isEnabled(),
                 authorities);
     }
 
@@ -76,7 +79,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isEnabled;
     }
 
     @Override

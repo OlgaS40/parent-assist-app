@@ -1,5 +1,6 @@
 package com.parentapp.users;
 
+import com.parentapp.auth.service.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
