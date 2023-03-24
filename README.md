@@ -41,13 +41,14 @@ time to achieve that. That is why this mobile app could be a profitable and succ
 * Backend
 * Efficient Communication
 * Frontend
+* QA / Unit Testing
 
 **In Progress**
-* QA / Unit Testing
+
+* Soft Skills
 
 **Future**
 
-* Soft Skills
 * Mobile
 * Project Management / Agile
 * DevOps
