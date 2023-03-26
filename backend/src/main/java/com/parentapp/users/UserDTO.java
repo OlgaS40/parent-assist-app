@@ -35,5 +35,6 @@ public class UserDTO {
 
     @Size(max = 255)
     private String parentId;
+    private boolean enabled;
 
 }

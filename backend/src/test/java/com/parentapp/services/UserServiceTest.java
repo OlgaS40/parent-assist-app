@@ -8,7 +8,7 @@ import com.parentapp.fixture.RoleFixture;
 import com.parentapp.fixture.UserDTOFixture;
 import com.parentapp.fixture.UserFixture;
 import com.parentapp.users.UserDTO;
-import com.parentapp.users.UserService;
+import com.parentapp.auth.service.UserService;
 import com.parentapp.util.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

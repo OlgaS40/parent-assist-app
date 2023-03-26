@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parentapp.fixture.UserDTOFixture;
 import com.parentapp.users.UserController;
 import com.parentapp.users.UserDTO;
-import com.parentapp.users.UserService;
+import com.parentapp.auth.service.UserService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
