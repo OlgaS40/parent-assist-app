@@ -1,14 +1,16 @@
 package com.parentapp.mobile.ui.main
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -23,11 +25,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.parentapp.mobile.R
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreen() {
+    var isPopupVisible by remember { mutableStateOf(false) }
+    val number = "1234567890" // replace with your phone number
+    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$number"))
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.home_bg),
@@ -78,5 +84,26 @@ fun HomeScreen() {
         Button(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth()) {
             Text("SignUp")
         }
+    }
+
+    Column(
+        modifier = Modifier.padding(35.dp).fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.End
+    ) {
+        IconButton(
+            onClick = { isPopupVisible = !isPopupVisible },
+            modifier = Modifier
+                .size(45.dp),
+            content = {
+                Image(
+                    painter = painterResource(R.drawable.ic_3dots),
+                    contentDescription = "3 dots"
+                )
+            }
+        )
+    }
+    if (isPopupVisible) {
+        PopupMenu()
     }
 }
