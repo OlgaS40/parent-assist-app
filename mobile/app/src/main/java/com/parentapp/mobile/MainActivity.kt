@@ -29,11 +29,11 @@ class MainActivity : ComponentActivity() {
         networkMonitor = NetworkMonitor(this)
         networkMonitor.register()
 
-        networkMonitor.isNetworkAvailable.observe(this) { isNetworkAvailable ->
-            if (!isNetworkAvailable) {
-                showPopUp()
-            } else {
+        networkMonitor.isNetworkAvailable.observeForever { isNetworkAvailable ->
+            if (isNetworkAvailable) {
                 dismissPopUp()
+            } else {
+                showPopUp()
             }
         }
     }
