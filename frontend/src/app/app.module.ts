@@ -29,6 +29,7 @@ import {
 import { CreateUserComponent } from './admin-panel/pages/users/create-user/create-user.component';
 import { MatIconModule } from "@angular/material/icon";
 import { CashInComponent } from './admin-panel/pages/cash-in/cash-in.component';
+import { HeaderComponent } from './shared/header/header.component';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { CashInComponent } from './admin-panel/pages/cash-in/cash-in.component';
     SubscriptionsComponent,
     ConfirmDialogComponent,
     CreateUserComponent,
-    CashInComponent
+    CashInComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

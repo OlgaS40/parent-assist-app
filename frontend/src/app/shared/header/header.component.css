@@ -1,0 +1,107 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "poppins", sans-serif;
+  box-sizing: border-box;
+}
+
+.header {
+  height: 100vh;
+  width: 100%;
+  padding: 0 8%;
+  background: #0a3a3a;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px; /* Optional: Add padding to the navigation */
+}
+
+.logo-image {
+  width: 140px;
+  order: 1; /* Add this line to change the order */
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.nav-links li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #fff;
+  padding: 20px;
+  position: relative;
+}
+
+.nav-links li.current-page a {
+  text-decoration: none;
+  position: relative;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.nav-links li.current-page a::after {
+  content: '';
+  background: #93eadd;
+  height: 2px;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  transition: width 0.5s;
+}
+
+.nav-links li.current-page a:hover::after {
+  width: 0;
+}
+
+.nav-links li a::after {
+  content: '';
+  background: #93eadd;
+  width: 0;
+  height: 2px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: width 0.5s;
+}
+
+.nav-links li a:hover::after {
+  width: 100%;
+}
+
+.nav-links li a:hover {
+  color: #337b7b;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.join-button {
+  margin-left: auto;
+  display: inline-block;
+  background: #337b7b;
+  color: #fff;
+  padding: 10px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+}
+
+.join-button:hover {
+  background-color: #b6ccc6;
+  color: #333;
+  font-size: 16px;
+}
