@@ -28,7 +28,7 @@
             </goals>
             <configuration>
               <executable>npm</executable>
-              <workingDirectory>${basedir}/frontend</workingDirectory>
+              <workingDirectory>${basedir}</workingDirectory>
               <arguments>
                 <argument>run</argument>
                 <argument>build</argument>
