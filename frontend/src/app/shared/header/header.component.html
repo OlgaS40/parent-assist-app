@@ -1,0 +1,21 @@
+<header>
+  <div class="header">
+    <nav>
+      <a routerLink="/">
+        <img src="../../../assets/images/logo.png" alt="Logo" class="logo-image">
+      </a>
+      <ul class="nav-links">
+        <li [class.current-page]="isCurrentPage('/')"><a routerLink="/">HOME</a></li>
+        <li [class.current-page]="isCurrentPage('/about')"><a routerLink="/about">ABOUT</a></li>
+        <li [class.current-page]="isCurrentPage('/parentAssistApp')"><a routerLink="/parentAssistApp">PARENT ASSIST APP</a></li>
+        <li [class.current-page]="isCurrentPage('/blog')"><a routerLink="/blog">BLOG</a></li>
+        <li [class.current-page]="isCurrentPage('/contact')"><a routerLink="/contact">CONTACT</a></li>
+      </ul>
+      <div >
+        <button class="join-button" (click)="login()">JOIN</button>
+        <!--      <button (click)="signUp()">Sign up</button>-->
+      </div>
+    </nav>
+
+  </div>
+</header>
