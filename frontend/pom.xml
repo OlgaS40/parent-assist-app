@@ -21,14 +21,16 @@
         <version>3.1.0</version>
         <executions>
           <execution>
-            <id>angular-build</id>
-            <phase>generate-resources</phase>
+            <id>npm-run-build</id>
+            <phase>compile</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>ng</executable>
+              <executable>npm</executable>
+              <workingDirectory>${basedir}/frontend</workingDirectory>
               <arguments>
+                <argument>run</argument>
                 <argument>build</argument>
               </arguments>
             </configuration>
