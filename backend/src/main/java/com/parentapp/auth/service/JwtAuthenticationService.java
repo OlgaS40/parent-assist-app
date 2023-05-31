@@ -11,6 +11,7 @@ import com.parentapp.auth.payload.response.UserInfoResponse;
 import com.parentapp.auth.repository.VerificationTokenRepository;
 import com.parentapp.auth.security.jwt.JwtUtils;
 import com.parentapp.auth.security.service.UserDetailsImpl;
+import com.parentapp.email_notify.EmailService;
 import com.parentapp.users.UserDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

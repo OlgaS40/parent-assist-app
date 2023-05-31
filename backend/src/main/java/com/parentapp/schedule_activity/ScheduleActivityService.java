@@ -1,25 +1,47 @@
 package com.parentapp.schedule_activity;
 
-import com.parentapp.activity.ActivityRepository;
 import com.parentapp.activity.Activity;
+import com.parentapp.activity.ActivityRepository;
+import com.parentapp.auth.service.UserService;
+import com.parentapp.email_notify.EmailService;
+import com.parentapp.users.UserDTO;
 import com.parentapp.util.NotFoundException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 
 @Service
 public class ScheduleActivityService {
-
+    @Value("${parentAssist.app.emailAddress}")
+    private String appEmail;
+    @Value("${schedule.mail.senderName}")
+    private String senderName;
+    @Value("${schedule.mail.subject}")
+    private String mailSubject;
+    @Value("${schedule.mail.content}")
+    private String mailContent;
+    @Value("${parentAssist.app.domain}")
+    private String appUrl;
     private final ScheduleActivityRepository scheduleActivityRepository;
     private final ActivityRepository activityRepository;
+    private final EmailService emailService;
+    private final UserService userService;
 
     public ScheduleActivityService(
             final ScheduleActivityRepository scheduleActivityRepository,
-            final ActivityRepository activityRepository) {
+            final ActivityRepository activityRepository, EmailService emailService, UserService userService) {
         this.scheduleActivityRepository = scheduleActivityRepository;
         this.activityRepository = activityRepository;
+        this.emailService = emailService;
+        this.userService = userService;
     }
 
     public List<ScheduleActivityDTO> findAll() {
@@ -40,6 +62,20 @@ public class ScheduleActivityService {
         mapToEntity(scheduleActivityDTO, scheduleActivity);
         scheduleActivity.setId(scheduleActivityDTO.getId());
         return scheduleActivityRepository.save(scheduleActivity).getId();
+    }
+    public void notifyCreatedActivities() {
+        List<UserDTO> users = userService.findAllAsDTO()
+                .stream()
+                .filter(UserDTO::isEnabled)
+                .toList();
+
+        users.forEach(user -> {
+            try {
+                sendNotificationEmail(user, appUrl);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void update(final String id, final ScheduleActivityDTO scheduleActivityDTO) {
@@ -76,4 +112,21 @@ public class ScheduleActivityService {
         return scheduleActivityRepository.existsByIdIgnoreCase(id);
     }
 
+    private void sendNotificationEmail(UserDTO user, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = emailService.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom(appEmail, senderName);
+        helper.setTo(user.getEmail());
+        helper.setSubject(mailSubject);
+
+        mailContent = mailContent.replace("[[name]]", user.getUsername());
+        String appURL = siteURL + "/auth";
+
+        mailContent = mailContent.replace("[[URL]]", appURL);
+
+        helper.setText(mailContent, true);
+
+        emailService.sendEmail(message);
+    }
 }

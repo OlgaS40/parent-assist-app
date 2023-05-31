@@ -1,4 +1,4 @@
-package com.parentapp.auth.service;
+package com.parentapp.email_notify;
 
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;

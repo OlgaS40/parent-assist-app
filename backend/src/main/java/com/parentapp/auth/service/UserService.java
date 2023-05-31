@@ -33,11 +33,11 @@ public class UserService {
         this.parentRepository = parentRepository;
         this.tokenRepository = tokenRepository;
     }
-
+    @Transactional
     public List<User> findAll() {
         return userRepository.findAll();
     }
-
+    @Transactional
     public List<UserDTO> findAllAsDTO() {
         return findAll().stream()
                 .map((user) -> mapToDTO(user, new UserDTO()))
