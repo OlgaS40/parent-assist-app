@@ -1,0 +1,45 @@
+/* NAVBAR */
+.navbar {
+  box-shadow: var(--box-shadow);
+}
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  color: var(--c-dark);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--c-brand);
+}
+
+/* LOGO */
+.logo-image {
+  width: 140px;
+  order: 1; /* Add this line to change the order */
+}
+
+/* BTN */
+.btn {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 150px;
+  padding: 10px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+}
+
+.btn-brand {
+  background-color: var(--c-brand);
+  border-color: var(--c-brand);
+  color: white;
+}
+
+.btn-brand:hover {
+  background-color: var(--c-brand-light);
+  border-color: var(--c-brand-light);
+  color: black;
+  font-size: 16px;
+}

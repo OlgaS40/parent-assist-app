@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { catchError, map } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { environment } from "../../../environments/environment";
+import {SignUpRequest} from "../model/signUpRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +18,13 @@ export class AuthService {
   constructor(private router: Router, private http:HttpClient) {
     const user = localStorage.getItem('user');
     if (user !== null) {
-    this.userSubject = new BehaviorSubject<User>( 
+    this.userSubject = new BehaviorSubject<User>(
       (this.user = JSON.parse(localStorage.getItem("user") ?? ''))
     );
     this.user = this.userSubject.asObservable();
   }
    }
-   
+
 
    public get userValue(): User {
     return this.userSubject.value;
@@ -41,11 +42,10 @@ export class AuthService {
 
   logout(): any {
     localStorage.removeItem("user");
-    this.router.navigate(["/login"]);
+    this.router.navigate(["/"]);
   }
-
-  register(user: any) {
-    return this.http.post(`${environment.apiUrl}/auth/register/`, user);
+  registerUser(signUpRequest: SignUpRequest) {
+    return this.http.post(`${environment.apiUrl}/auth/signup/`, signUpRequest);
   }
 
   getAll(): Observable<User[]> {
@@ -107,9 +107,5 @@ export class AuthService {
           throwError(`Network Error: ${error.statusText} (${error.status})`)
         )
       );
-  }
-
-  RegisterUser(inputdata:any){
-    return this.http.post(`${environment.apiUrl}`,inputdata)
   }
 }

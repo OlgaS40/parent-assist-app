@@ -1,0 +1,5 @@
+.landing-page-container {
+  display: flex;
+  flex-direction: column;
+  /* Additional styles to adjust spacing, alignment, etc. */
+}

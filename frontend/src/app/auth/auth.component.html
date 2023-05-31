@@ -1,0 +1,71 @@
+<!-- navbar  -->
+<app-navbar></app-navbar>
+<div class="login-container">
+  <div class="login-wrap">
+    <div class="login-html">
+      <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+      <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+      <div class="login-form">
+        <div class="sign-in-htm">
+          <div class="group col-lg-12">
+            <label for="user-signin" class="label">Username</label>
+            <input id="user-signin" type="text" class="input" [(ngModel)]="loginRequest.username">
+          </div>
+          <div class="group col-lg-12">
+            <label for="pass-signin" class="label">Password</label>
+            <input id="pass-signin" type="password" class="input" data-type="password" [(ngModel)]="loginRequest.password">
+          </div>
+          <div class="form-options col-lg-12">
+            <input id="check" type="checkbox" class="check" checked>
+            <label class="start" for="check"><span class="icon"></span> Keep me Signed in</label>
+            <label class="end"><a class="a-forgot" href="#forgot">Forgot Password?</a></label>
+          </div>
+          <div class="group col-lg-12">
+            <input type="submit" class="button" value="Sign In" (click)="onSignIn()">
+          </div>
+          <div class="login-form-copy">Or Login with</div>
+          <div class="social-icons">
+            <div class="social-icon facebook"><span class="fa fa-facebook"></span></div>
+            <div class="social-icon google"><span class="fa fa-google"></span></div>
+          </div>
+          <div class="hr"></div>
+          <div class="foot-lnk">
+            <label for="tab-2">You are not Member?</label>
+          </div>
+        </div>
+        <div class="sign-up-htm">
+          <div class="group col-lg-12">
+            <label for="user" class="label">Username</label>
+            <input id="user" type="text" class="input" [ngModel]="signUpRequest.username">
+          </div>
+          <div class="group col-lg-12">
+            <label for="pass" class="label">Password</label>
+            <input id="pass" type="password" class="input" data-type="password" [(ngModel)]="signUpRequest.password">
+          </div>
+          <div class="group col-lg-12">
+            <label for="pass-repeat" class="label">Repeat Password</label>
+            <input id="pass-repeat" type="password" class="input" data-type="password" [(ngModel)]="repeatPassword">
+          </div>
+          <div class="group col-lg-12">
+            <label for="email" class="label">Email Address</label>
+            <input id="email" type="text" class="input" [(ngModel)]="signUpRequest.email">
+          </div>
+          <div class="group col-lg-12">
+            <input type="submit" class="button" value="Sign Up" (click)="onSignUp()">
+          </div>
+          <div class="login-form-copy">Or Sign Up with</div>
+          <div class="social-icons col-lg-12">
+            <div class="social-icon facebook col-lg-6"><span class="fa fa-facebook"></span></div>
+            <div class="social-icon google col-lg-6"><span class="fa fa-google"></span></div>
+          </div>
+          <div class="hr"></div>
+          <div class="foot-lnk">
+            <label for="tab-1">Already Member?</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- footer  -->
+<app-footer></app-footer>
