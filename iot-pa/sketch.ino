@@ -17,15 +17,6 @@ void setup() {
   pinMode(ledPin, OUTPUT);
 
   connectToWiFi();
-
-  xTaskCreate(
-    ledTask,
-    "LED Task",
-    10000,
-    NULL,
-    1,
-    &ledTaskHandle
-  );
 }
 
 void loop() {

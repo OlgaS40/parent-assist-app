@@ -35,6 +35,7 @@ public class ScheduleActivityController {
     }
 
     @PostMapping("/notify")
+    @CrossOrigin("*")
     public ResponseEntity<Void> notifyCreatedScheduleActivities() {
         scheduleActivityService.notifyCreatedActivities();
         return ResponseEntity.noContent().build();
