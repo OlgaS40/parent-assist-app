@@ -6,19 +6,19 @@
       <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
       <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
       <div class="login-form">
-        <div class="sign-in-htm">
+        <form class="sign-in-htm" [formGroup]="loginForm">
           <div class="group col-lg-12">
             <label for="user-signin" class="label">Username</label>
-            <input id="user-signin" type="text" class="input" [(ngModel)]="loginRequest.username">
+            <input id="user-signin" type="text" class="input" formControlName="username">
           </div>
           <div class="group col-lg-12">
             <label for="pass-signin" class="label">Password</label>
-            <input id="pass-signin" type="password" class="input" data-type="password" [(ngModel)]="loginRequest.password">
+            <input id="pass-signin" type="password" class="input" data-type="password" formControlName="password">
           </div>
           <div class="form-options col-lg-12">
-            <input id="check" type="checkbox" class="check" checked>
+            <input id="check" type="checkbox" class="check" formControlName="keepMeSignIn" checked>
             <label class="start" for="check"><span class="icon"></span> Keep me Signed in</label>
-            <label class="end"><a class="a-forgot" href="#forgot">Forgot Password?</a></label>
+            <label class="end"><a class="a-forgot" data-bs-toggle="modal" data-bs-target="#forgotPassword">Forgot Password?</a></label>
           </div>
           <div class="group col-lg-12">
             <input type="submit" class="button" value="Sign In" (click)="onSignIn()">
@@ -32,23 +32,36 @@
           <div class="foot-lnk">
             <label for="tab-2">You are not Member?</label>
           </div>
-        </div>
-        <div class="sign-up-htm">
+        </form>
+        <form class="sign-up-htm" [formGroup]="signUpForm">
           <div class="group col-lg-12">
             <label for="user" class="label">Username</label>
-            <input id="user" type="text" class="input" [ngModel]="signUpRequest.username">
+            <input id="user" type="text" class="input" formControlName="username">
+            <div *ngIf="!isFieldValid('signup','username')" class="text-danger">
+              {{ getErrorMessage('signup', 'username') }}
+            </div>
           </div>
           <div class="group col-lg-12">
             <label for="pass" class="label">Password</label>
-            <input id="pass" type="password" class="input" data-type="password" [(ngModel)]="signUpRequest.password">
+            <input id="pass" type="password" class="input" data-type="password" formControlName="password">
+            <div *ngIf="!isFieldValid('signup','password')" class="text-danger">
+              {{ getErrorMessage('signup', 'password') }}
+            </div>
           </div>
           <div class="group col-lg-12">
             <label for="pass-repeat" class="label">Repeat Password</label>
-            <input id="pass-repeat" type="password" class="input" data-type="password" [(ngModel)]="repeatPassword">
+            <input id="pass-repeat" type="password" class="input" data-type="password" formControlName="repeatPassword">
+            <div *ngIf="!isFieldValid('signup','repeatPassword')
+             || incorrectPasswordRepeat()&&isSignUpSubmited" class="text-danger">
+              {{ getErrorMessage('signup', 'repeatPassword') }}
+            </div>
           </div>
           <div class="group col-lg-12">
             <label for="email" class="label">Email Address</label>
-            <input id="email" type="text" class="input" [(ngModel)]="signUpRequest.email">
+            <input id="email" type="text" class="input" formControlName="email">
+            <div *ngIf="!isFieldValid('signup','email')" class="text-danger">
+              {{ getErrorMessage('signup', 'email') }}
+            </div>
           </div>
           <div class="group col-lg-12">
             <input type="submit" class="button" value="Sign Up" (click)="onSignUp()">
@@ -62,7 +75,7 @@
           <div class="foot-lnk">
             <label for="tab-1">Already Member?</label>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>

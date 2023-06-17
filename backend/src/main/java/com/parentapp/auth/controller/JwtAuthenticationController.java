@@ -38,10 +38,10 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest, HttpServletRequest request)
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest, @RequestHeader("X-URL") String url)
             throws UnsupportedEncodingException, MessagingException {
 
-        SignUpResponse response = jwtAuthenticationService.registerUser(signUpRequest, request.getRequestURL().toString());
+        SignUpResponse response = jwtAuthenticationService.registerUser(signUpRequest, url);
         if (!response.isSuccessful()) {
             return ResponseEntity.badRequest().body(response.getAuthResponse());
         }

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
@@ -21,8 +23,8 @@ public class JwtUtils {
     @Value("${parentAssist.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${parentAssist.app.jwtExpirationMs}")
-    private String jwtExpirationMs;
+    @Value("${parentAssist.app.jwtExpirationHours}")
+    private Long jwtExpirationHours;
 
     @Value("${parentAssist.app.jwtCookieName}")
     private String jwtCookie;
@@ -85,10 +87,14 @@ public class JwtUtils {
 
     public String generateTokenFromUsername(String username) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime expirationTime = currentTime.plusHours(jwtExpirationHours);
+        Date expirationDate = Date.from(expirationTime.atZone(ZoneId.systemDefault()).toInstant());
+
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(expirationDate)
                 .signWith(key)
                 .compact();
     }

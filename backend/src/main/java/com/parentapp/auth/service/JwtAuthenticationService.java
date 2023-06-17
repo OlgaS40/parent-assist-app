@@ -87,12 +87,12 @@ public class JwtAuthenticationService {
     }
 
     public SignUpResponse registerUser(SignUpRequest signUpRequest, String siteURL) throws MessagingException, UnsupportedEncodingException {
-        if (userService.existsByEmail(signUpRequest.getEmail())) {
-            return new SignUpResponse(false, new MessageResponse("Error: Email is already in use!"));
+        if (userService.existsByUsername(signUpRequest.getUsername())) {
+            return new SignUpResponse(false, new MessageResponse("Error: This username is already registered, please enter another one!"));
         }
 
-        if (userService.existsByUsername(signUpRequest.getUsername()) && userService.existsByEmail(signUpRequest.getEmail())) {
-            return new SignUpResponse(false, new MessageResponse("Error: Username and email provided are already registered!"));
+        if (userService.existsByEmail(signUpRequest.getEmail())) {
+            return new SignUpResponse(false, new MessageResponse("Error: Email is already in use!"));
         }
 
         // Create new user's account
@@ -135,6 +135,10 @@ public class JwtAuthenticationService {
 
     public SignUpResponse verifyUserForRegistration(String verificationCode) {
         VerificationToken token = tokenRepository.findByToken(verificationCode);
+        if (Objects.isNull(token)) {
+            return new SignUpResponse(false, new MessageResponse("Oops, it seams that your link expired or was already confirmed! Please contact us for more details."));
+        }
+
         UserDTO user = userService.get(token.getUser().getId());
 
         if (Objects.isNull(user)) {
