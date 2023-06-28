@@ -1,36 +1,38 @@
 package com.parentapp.auth.service;
 
 import com.parentapp.auth.model.URole;
+import com.parentapp.auth.model.User;
 import com.parentapp.auth.model.VerificationToken;
+import com.parentapp.auth.payload.request.ForgotPasswordRequest;
 import com.parentapp.auth.payload.request.LoginRequest;
 import com.parentapp.auth.payload.request.SignUpRequest;
-import com.parentapp.auth.payload.response.JwtAuthResponse;
-import com.parentapp.auth.payload.response.MessageResponse;
-import com.parentapp.auth.payload.response.SignUpResponse;
-import com.parentapp.auth.payload.response.UserInfoResponse;
+import com.parentapp.auth.payload.response.*;
 import com.parentapp.auth.repository.VerificationTokenRepository;
+import com.parentapp.auth.security.jwt.JwtRequestFilter;
 import com.parentapp.auth.security.jwt.JwtUtils;
 import com.parentapp.auth.security.service.UserDetailsImpl;
 import com.parentapp.users.UserDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import net.bytebuddy.utility.RandomString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -38,18 +40,27 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationService {
     @Value("${parentAssist.app.emailAddress}")
     private String appEmail;
-    @Value("${register.mail.senderName}")
+    @Value("${mail.senderName}")
     private String senderName;
     @Value("${register.mail.subject}")
-    private String mailSubject;
+    private String registerMailSubject;
     @Value("${register.mail.content}")
-    private String mailContent;
+    private String registerMailContent;
+    @Value("${forgotPassword.mail.subject}")
+    private String forgotPasswordMailSubject;
+    @Value("${forgotPassword.mail.content}")
+    private String forgotPasswordMailContent;
+    @Value("${home.page}")
+    private String homeUrl;
+
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
     private final VerificationTokenRepository tokenRepository;
     private final EmailService emailService;
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationService.class);
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$@$!%*?&";
 
     public JwtAuthenticationService(AuthenticationManager authenticationManager,
                                     UserService userService,
@@ -117,18 +128,22 @@ public class JwtAuthenticationService {
 
     private void sendVerificationEmail(UserDTO user, String siteURL, VerificationToken verificationToken) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = emailService.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setFrom(appEmail, senderName);
         helper.setTo(user.getEmail());
-        helper.setSubject(mailSubject);
+        helper.setSubject(registerMailSubject);
 
-        mailContent = mailContent.replace("[[name]]", user.getUsername());
+        registerMailContent = registerMailContent.replace("[[name]]", user.getUsername());
         String verifyURL = siteURL + "/verify?code=" + verificationToken.getToken();
 
-        mailContent = mailContent.replace("[[URL]]", verifyURL);
+        registerMailContent = registerMailContent.replace("[[URL]]", verifyURL);
+        registerMailContent = registerMailContent.replace("[[URL-home]]", homeUrl);
 
-        helper.setText(mailContent, true);
+        helper.setText(registerMailContent, true);
+
+        addInlineImageToEmail(helper, "images/completeRegistration.jpg", "completeRegistration");
+        addInlineImageToEmail(helper, "images/logoImage.png", "logoImage");
 
         emailService.sendEmail(message);
     }
@@ -161,6 +176,59 @@ public class JwtAuthenticationService {
 
     }
 
+    public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest) throws MessagingException, UnsupportedEncodingException {
+        if (!userService.existsByUsername(forgotPasswordRequest.getUsername())) {
+            return new ForgotPasswordResponse(false, new MessageResponse("Error: Username is not registered!"));
+        }
+
+        if (!userService.existsByEmail(forgotPasswordRequest.getEmail())) {
+            return new ForgotPasswordResponse(false, new MessageResponse("Error: Email is not registered!"));
+        }
+
+        User user = userService.getByUsername(forgotPasswordRequest.getUsername());
+        if (!Objects.equals(user.getEmail(), forgotPasswordRequest.getEmail())) {
+            return new ForgotPasswordResponse(false, new MessageResponse("Error: Username and email does not match!"));
+        }
+        // Create new password
+        String password = generateRandomPassword(8);
+        user.setPassword(encoder.encode(password));
+        userService.update(user);
+
+        UserDTO userDTO = userService.get(user.getId());
+        sendForgotPasswordEmail(userDTO, password, forgotPasswordRequest.getUrl());
+        return new ForgotPasswordResponse(true,
+                new MessageResponse(String.format("Congratulation %s, you can now login our app with credentials provided in your email.", user.getUsername())));
+    }
+
+    private void sendForgotPasswordEmail(UserDTO user, String password, String url) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = emailService.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom(appEmail, senderName);
+        helper.setTo(user.getEmail());
+        helper.setSubject(forgotPasswordMailSubject);
+
+        forgotPasswordMailContent = forgotPasswordMailContent.replace("[[username]]", user.getUsername());
+        forgotPasswordMailContent = forgotPasswordMailContent.replace("[[password]]", password);
+        forgotPasswordMailContent = forgotPasswordMailContent.replace("[[URL]]", url);
+        forgotPasswordMailContent = forgotPasswordMailContent.replace("[[URL-home]]", homeUrl);
+
+        helper.setText(forgotPasswordMailContent, true);
+        addInlineImageToEmail(helper, "images/logoImage.png", "logoImage");
+        addInlineImageToEmail(helper, "images/resetPassword.jpg", "resetPassword");
+
+        emailService.sendEmail(message);
+    }
+
+    private void addInlineImageToEmail(MimeMessageHelper helper, String relativePath, String imageName) throws MessagingException {
+        URL imageUrl = getClass().getClassLoader().getResource(relativePath);
+        if (imageUrl != null) {
+            helper.addInline(imageName, new File(imageUrl.getFile()));
+        } else {
+            logger.warn("Image file not found.");
+        }
+    }
+
     public JwtAuthResponse logoutUser() {
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return new JwtAuthResponse(cookie, new MessageResponse("You've been signed out!"));
@@ -170,5 +238,30 @@ public class JwtAuthenticationService {
         return Objects.isNull(strRoles)
                 ? Collections.singleton(URole.USER)
                 : strRoles.stream().map(role -> URole.getEnum(role)).collect(Collectors.toSet());
+    }
+
+    public static String generateRandomPassword(int length) {
+
+        Random random = new Random();
+        StringBuilder passwordBuilder = new StringBuilder();
+
+        // Add at least one lowercase letter
+        passwordBuilder.append(Character.toLowerCase(CHARACTERS.charAt(random.nextInt(26))));
+
+        // Add at least one uppercase letter
+        passwordBuilder.append(Character.toUpperCase(CHARACTERS.charAt(random.nextInt(26))));
+
+        // Add at least one digit
+        passwordBuilder.append(CHARACTERS.charAt(random.nextInt(10) + 52));
+
+        // Add at least one special character
+        passwordBuilder.append("$@$!%*?&".charAt(random.nextInt(8)));
+
+        // Add remaining characters
+        for (int i = 0; i < length; i++) {
+            passwordBuilder.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
+
+        return passwordBuilder.toString();
     }
 }

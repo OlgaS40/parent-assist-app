@@ -8,6 +8,7 @@ import {AuthService} from "../shared/service/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {first} from "rxjs/operators";
 import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
+import {ForgotPasswordRequest} from "../shared/model/forgotPasswordRequest";
 
 @Component({
   selector: 'app-auth',
@@ -17,12 +18,15 @@ import {ForgotPasswordComponent} from "./forgot-password/forgot-password.compone
 export class AuthComponent implements OnInit {
   signUpForm: FormGroup = new FormGroup({});
   loginForm: FormGroup = new FormGroup({});
+  forgotPasswordForm: FormGroup = new FormGroup({});
 
   defaultRole = {name: Role.USER, value: "user"};
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
-  isSignUpSubmited: boolean = false;
+  isSignUpSubmit: boolean = false;
+  isLoginSubmit: boolean = false;
+  isForgotPasswordSubmit: boolean = false;
   loginStatusError: boolean = false;
   keepMeSignInStatus: boolean = false;
 
@@ -48,10 +52,15 @@ export class AuthComponent implements OnInit {
       keepMeSignIn: this.builder.control(true)
 
     })
+
+    this.forgotPasswordForm = this.builder.group({
+      username: this.builder.control('', Validators.required),
+      email: this.builder.control('', Validators.compose([Validators.required, Validators.email]))
+    })
   }
 
   getErrorMessage(formName: string, field: string) {
-    const form = formName === 'signup' ? this.signUpForm : this.loginForm;
+    const form = this.getForm(formName)
     const control = form.get(field);
 
     if (field === 'username' && control?.hasError("minlength")) {
@@ -65,7 +74,7 @@ export class AuthComponent implements OnInit {
       return "Provide strong password: it should be minimum of 8 characters and contain at least: one lowercase and one uppercase letter, one digit, at least one special character from the set [$@$!%*?&].";
     }
 
-    if (field === 'repeatPassword' && this.incorrectPasswordRepeat() && this.isSignUpSubmited) {
+    if (field === 'repeatPassword' && this.incorrectPasswordRepeat() && this.isSignUpSubmit) {
       return "Passwords do not match";
     }
 
@@ -79,12 +88,32 @@ export class AuthComponent implements OnInit {
   }
 
   isFieldValid(formName: string, field: string): boolean {
-    const form = formName === 'signup' ? this.signUpForm : this.loginForm;
+    const form = this.getForm(formName);
     const control = form.get(field);
-    if (this.isSignUpSubmited) {
+    if (form === this.signUpForm && this.isSignUpSubmit ||
+      form === this.loginForm && this.isLoginSubmit ||
+      form === this.forgotPasswordForm && this.isForgotPasswordSubmit) {
       return (control?.valid ?? false);
     }
     return true;
+  }
+
+  private getForm(formName: string) {
+    let form: FormGroup = new FormGroup({});
+    switch (formName) {
+      case "signup":
+        form = this.signUpForm;
+        break;
+      case "login":
+        form = this.loginForm;
+        break;
+      case "forgotPassword":
+        form = this.forgotPasswordForm;
+        break;
+      default:
+        console.log("It's an unknown form.");
+    }
+    return form;
   }
 
   onSignIn() {
@@ -101,25 +130,35 @@ export class AuthComponent implements OnInit {
   }
 
   private login(loginRequest: LoginRequest, keepMeSignIn: boolean) {
+    this.isLoginSubmit = true;
     this.service
       .login(loginRequest, keepMeSignIn)
       .pipe(first())
       .subscribe({
         next: () => {
           this.loginStatusError = false;
+          this.isLoginSubmit = false;
           this.router.navigate(["/activities"]);
         },
-        error: (error) => {
-          console.log(error);
+        error: (err) => {
+          console.log(err);
           console.log("Invalid credentials");
-          this.toastr.error(this.errorMessage);
           this.loginStatusError = true;
+          if (err.status === 0 && err.statusText === 'Unknown Error') {
+            this.toastr.error('Please try again later.', 'Network connection error');
+          } else if (err.error.exception === 'BadCredentialsException') {
+            this.toastr.error('Credential you entered are wrong, try again.');
+          } else if(err.error === 'User is disabled') {
+            this.toastr.error('Please complete registration process, access the confirmation link from your email address.','User is still disabled!');
+          } else {
+            this.toastr.error(err.error);
+          }
         },
       });
   }
 
   onSignUp() {
-    this.isSignUpSubmited = true;
+    this.isSignUpSubmit = true;
 
     if (this.signUpForm.valid) {
       const signUpRequest: SignUpRequest = {
@@ -134,7 +173,7 @@ export class AuthComponent implements OnInit {
           console.log(data);
           this.isSuccessful = true;
           this.isSignUpFailed = false;
-          this.isSignUpSubmited = false;
+          this.isSignUpSubmit = false;
           this.toastr.success("Complete Registration: Check your email and click on the verification link.", 'Registered Successfully!', {
             positionClass: 'toast-top-center',
             timeOut: 0,
@@ -147,7 +186,7 @@ export class AuthComponent implements OnInit {
           this.errorMessage = err.error.message;
           this.isSignUpFailed = true;
           if (err.status === 0 && err.statusText === 'Unknown Error') {
-            this.toastr.error('Please try again later.','Network connection error');
+            this.toastr.error('Please try again later.', 'Network connection error');
           } else if (err.status === 500) {
             this.toastr.error('Oops, smth went wrong. Please try again later.');
           } else {
@@ -165,15 +204,58 @@ export class AuthComponent implements OnInit {
   }
 
   reset(formName: string) {
-    const form = formName === 'signup' ? this.signUpForm : this.loginForm;
+    const form = this.getForm(formName);
     form.reset();
   }
 
-  @HostListener('window:beforeunload', ['$event'])
-  onBeforeUnload(event: BeforeUnloadEvent) {
-    if(!this.keepMeSignInStatus){
-      this.service.logout()
+  onForgotPassword() {
+    this.isForgotPasswordSubmit = true;
+
+    if (this.forgotPasswordForm.valid) {
+      const currentUrl = window.location.href;
+      const newUrl = new URL(currentUrl);
+      const baseUrl = `${newUrl.protocol}//${newUrl.hostname}${newUrl.port ? `:${newUrl.port}` : ''}`;
+      const desiredEndpoint = "/auth";
+      const url = `${baseUrl}${desiredEndpoint}`;
+      const forgotRequest: ForgotPasswordRequest = {
+        username: this.forgotPasswordForm.get('username')?.value,
+        email: this.forgotPasswordForm.get('email')?.value,
+        url: url
+      };
+      this.service.forgotPassword(forgotRequest).subscribe({
+        next: data => {
+          this.isForgotPasswordSubmit = false;
+          this.toastr.success("Check your email for a new password to log in to your account.", 'Password changed Successfully!', {
+            positionClass: 'toast-top-center'
+          });
+          this.reset('forgotPassword');
+          this.closeModal('forgotPassword');
+          this.router.navigate(['auth']);
+        },
+        error: err => {
+          this.errorMessage = err.error.message;
+          if (err.status === 0 && err.statusText === 'Unknown Error') {
+            this.toastr.error('Please try again later.', 'Network connection error');
+          } else if (err.status === 500) {
+            this.toastr.error('Oops, smth went wrong. Please try again later.');
+          } else {
+            this.toastr.error(this.errorMessage);
+          }
+        },
+      })
+    } else {
+      this.toastr.warning("Please enter valid data!")
     }
-    this.toastr.success("You are closing the app. See you next time.", 'Good Buy!');
+  }
+
+  private closeModal(modalId: string): void {
+    const modal = document.getElementById(modalId);
+    const modalBackdrop = document.querySelector('.modal-backdrop') as HTMLElement;;
+    if(modal !== null){
+      modal.style.display = 'none';
+    }
+    if(modalBackdrop !== null){
+      modalBackdrop.style.display = 'none';
+    }
   }
 }

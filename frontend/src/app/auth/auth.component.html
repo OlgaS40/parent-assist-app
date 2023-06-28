@@ -52,7 +52,7 @@
             <label for="pass-repeat" class="label">Repeat Password</label>
             <input id="pass-repeat" type="password" class="input" data-type="password" formControlName="repeatPassword">
             <div *ngIf="!isFieldValid('signup','repeatPassword')
-             || incorrectPasswordRepeat()&&isSignUpSubmited" class="text-danger">
+             || incorrectPasswordRepeat()&&isSignUpSubmit" class="text-danger">
               {{ getErrorMessage('signup', 'repeatPassword') }}
             </div>
           </div>
@@ -76,6 +76,42 @@
             <label for="tab-1">Already Member?</label>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Forgot password  -->
+<div class="modal fade" id="forgotPassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Forgot your password?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="mb-3">
+            <img src="../../../assets/images/forgotPassword.jpg" alt="Forgot Password" class="forgot-image">
+            <p>No problem!<br> Please enter your username and email address associated with your account in the field below. We will send you an email with instructions on how to reset your password.</p>
+          </div>
+        <form [formGroup]="forgotPasswordForm">
+          <div class="group">
+            <label for="username-forgot" class="col-form-label">Username:</label>
+            <input type="text" class="input-forgot" id="username-forgot" formControlName="username">
+            <div *ngIf="!isFieldValid('forgotPassword','username')" class="text-danger">
+              {{ getErrorMessage('forgotPassword', 'username') }}
+            </div>
+          </div>
+          <div class="group">
+            <label for="email-forgot" class="col-form-label">Email:</label>
+            <input type="text" class="input-forgot" id="email-forgot" formControlName="email">
+            <div *ngIf="!isFieldValid('forgotPassword','email')" class="text-danger">
+              {{ getErrorMessage('forgotPassword', 'email') }}
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-brand" (click)="onForgotPassword()">Send</button>
       </div>
     </div>
   </div>

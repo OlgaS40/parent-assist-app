@@ -56,6 +56,7 @@
   display: inline-block;
   border-bottom: 2px solid transparent;
 }
+
 .login-html .tab:hover {
   text-decoration: none;
   color: var(--c-brand-light);
@@ -75,11 +76,11 @@
   transform-style: preserve-3d;
 }
 
-.login-form .group {
+.group {
   margin-bottom: 15px;
 }
 
-.login-form .form-options{
+.login-form .form-options {
   display: flex;
   justify-content: space-between;
   margin-bottom: 25px;
@@ -115,6 +116,7 @@
 .login-form .group .label {
   color: #aaa;
   font-size: 12px;
+  clear: left;
 }
 
 .login-form .group .button {
@@ -128,7 +130,7 @@
   font-size: 16px;
 }
 
-.login-form .form-options label .icon {
+.form-options label .icon {
   width: 15px;
   height: 15px;
   border-radius: 2px;
@@ -193,6 +195,7 @@
 .foot-lnk {
   text-align: center;
 }
+
 .foot-lnk:hover {
   color: var(--c-brand-light);
 }
@@ -208,22 +211,23 @@
   color: var(--c-brand-light);
 }
 
-.login-form-copy
-{
+.login-form-copy {
   margin-bottom: 5px;
   text-align: center;
 }
-.login-form_sign-up
-{
+
+.login-form_sign-up {
   text-decoration: none;
   color: rgb(18, 190, 190);
 }
-.social-icons{
+
+.social-icons {
   display: flex;
   width: 100%;
   justify-content: space-around;
 }
-.social-icon{
+
+.social-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -235,10 +239,11 @@
   margin-bottom: 5px;
 }
 
-.facebook{
+.facebook {
   background-color: #385998;
 }
-.facebook:hover{
+
+.facebook:hover {
   background-color: #436296;
   font-size: 1.5rem;
 }
@@ -246,14 +251,14 @@
 .google {
   background-color: #CA3224;
 }
-.google:hover{
+
+.google:hover {
   background-color: #af5755;
   font-size: 1.5rem;
 }
 
 
-input:focus,input:hover,input:active
-{
+input:focus, input:hover, input:active {
   outline: none;
 }
 
@@ -263,4 +268,47 @@ input:focus,input:hover,input:active
 
 .end {
   align-self: flex-end;
+}
+
+.input-forgot {
+  width: 100%;
+  color: #090909;
+  display: block;
+  border-radius: 25px;
+  border-color: rgb(133, 133, 133);
+  padding: 15px 20px;
+}
+
+/* BTN */
+.btn {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 100%;
+  padding: 10px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+}
+
+.btn-brand {
+  background-color: var(--c-brand);
+  border-color: var(--c-brand);
+  color: white;
+}
+
+.btn-brand:hover {
+  background-color: var(--c-brand-light);
+  border-color: var(--c-brand-light);
+  color: black;
+  font-size: 16px;
+}
+
+.forgot-image {
+  max-width: 50%;
+  float: left;
+}
+form{
+  clear: left;
 }

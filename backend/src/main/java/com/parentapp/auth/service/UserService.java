@@ -52,6 +52,12 @@ public class UserService {
     }
 
     @Transactional
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Transactional
     public String create(final UserDTO userDTO) {
         final User user = new User();
         mapToEntity(userDTO, user);
@@ -73,6 +79,13 @@ public class UserService {
         final User user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(userDTO, user);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void update(final User user) {
+        userRepository.findById(user.getId())
+                .orElseThrow(NotFoundException::new);
         userRepository.save(user);
     }
 

@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {environment} from "../../../environments/environment";
 import {SignUpRequest} from "../model/signUpRequest";
 import {LoginRequest} from "../model/loginRequest";
+import {ForgotPasswordRequest} from "../model/forgotPasswordRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -65,8 +66,12 @@ export class AuthService {
     this.isLoggedIn = false;
     this.router.navigate(['/']);
   }
+  forgotPassword(forgotPasswordRequest: ForgotPasswordRequest) {
+    return this._http.post(`${environment.apiUrl}auth/forgotPassword`, forgotPasswordRequest);
+  }
 
   getAll(): Observable<User[]> {
+
     return this._http.get<User[]>(`${environment.apiUrl}user`);
   }
 
@@ -126,5 +131,4 @@ export class AuthService {
         )
       );
   }
-
 }
