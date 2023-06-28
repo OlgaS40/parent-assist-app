@@ -1,0 +1,30 @@
+/* SECTION TITLE */
+.section-title {
+  margin-bottom: 20px;
+}
+
+.section-title .line {
+  width: 200px;
+  height: 4px;
+  background-color: var(--c-brand);
+  margin: 16px auto 24px auto;
+}
+
+.section-title p {
+  max-width: 2000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ICONBOX */
+.iconbox {
+  width: 70px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--c-brand-rgb), 0.1);
+  color: var(--c-brand);
+  font-size: 34px;
+  flex: none;
+}

@@ -1,0 +1,142 @@
+/* ICONBOX */
+.iconbox {
+  width: 70px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--c-brand-rgb), 0.1);
+  color: var(--c-brand);
+  font-size: 34px;
+  flex: none;
+}
+
+/* FEATURES */
+.parentAssistApp {
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.parentAssistApp::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  background: rgba(var(--c-brand-rgb), 0.2);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transition: var(--transition);
+}
+
+
+.parentAssistApp:hover::after {
+  width: 100%;
+  height: 100%;
+  background: var(--c-brand);
+  z-index: -1;
+}
+
+.parentAssistApp:hover h5,
+.parentAssistApp:hover p {
+  color: white;
+}
+
+.parentAssistApp:hover .iconbox {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+}
+
+.btn-row {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-title{
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+/* BTN */
+.btn {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 150px;
+  padding: 10px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+}
+
+.btn-brand {
+  background-color: var(--c-brand);
+  border-color: var(--c-brand);
+  color: white;
+}
+
+.btn-brand:hover {
+  background-color: var(--c-brand-light);
+  border-color: var(--c-brand-light);
+  color: beige;
+  font-size: 16px;
+}
+
+/* APP */
+.app-item .iconbox {
+  background-color: var(--c-brand);
+  color: white;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.app-item:hover .iconbox {
+  opacity: 1;
+  top: 50%;
+}
+
+/* IMAGE ZOOM */
+.image-zoom {
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.image-zoom-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+.image-zoom-wrapper img{
+  transition: var(--transition);
+}
+
+.image-zoom:hover .image-zoom-wrapper img {
+  transform: scale(1.1);
+}
+
+/* REVIEW */
+.review small {
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--c-brand);
+}
+
+.review-head {
+  position: relative;
+}
+
+.review-head::after {
+  content: "";
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  bottom: -14px;
+  background-color: white;
+  transform: rotate(45deg);
+}

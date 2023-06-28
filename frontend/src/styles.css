@@ -1,4 +1,49 @@
-/* You can add global styles to this file, and also import other style files */
+/* FONTS */
+@import url(assets/fonts/clash-display/css/clash-display.css);
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* VARIABLES */
+:root {
+  --c-dark: #212529;
+  --c-brand: rgb(51, 123, 123);
+  --c-brand-light: #51b9b9;
+  --c-brand-popup: rgba(22, 68, 68, 0.82);
+  --c-brand-rgb: 51, 123, 123;
+  --c-body: #727272;
+  --font-base: "ClashDisplay", sans-serif;
+  --box-shadow: 0px 15px 25px rgba(0,0,0,0.08);
+  --transition: all 0.5s ease;
+}
+
+/* RESET & HELPERS */
+body {
+  font-family: var(--font-base);
+  line-height: 1.7;
+  color: var(--c-body);
+}
+
+h1, h2, h3,h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 600;
+  color: var(--c-dark);
+}
+
+a {
+  text-decoration: none;
+  color: var(--c-brand);
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--c-brand-light);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.section-padding {
+  padding-top: 100px;
+  padding-bottom: 50px;
+}

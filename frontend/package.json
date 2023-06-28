@@ -20,6 +20,8 @@
     "@angular/platform-browser": "^15.2.0",
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
+    "@fancyapps/ui": "^5.0.17",
+    "bootstrap": "^5.2.3",
     "ngx-toastr": "^16.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
