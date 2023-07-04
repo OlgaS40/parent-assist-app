@@ -1,5 +1,6 @@
 package com.parentapp.auth.service;
 
+import com.parentapp.auth.model.AuthProvider;
 import com.parentapp.auth.model.URole;
 import com.parentapp.auth.model.User;
 import com.parentapp.auth.model.VerificationToken;
@@ -8,7 +9,6 @@ import com.parentapp.auth.payload.request.LoginRequest;
 import com.parentapp.auth.payload.request.SignUpRequest;
 import com.parentapp.auth.payload.response.*;
 import com.parentapp.auth.repository.VerificationTokenRepository;
-import com.parentapp.auth.security.jwt.JwtRequestFilter;
 import com.parentapp.auth.security.jwt.JwtUtils;
 import com.parentapp.auth.security.service.UserDetailsImpl;
 import com.parentapp.users.UserDTO;
@@ -20,12 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,37 +48,32 @@ public class JwtAuthenticationService {
     @Value("${home.page}")
     private String homeUrl;
 
-    private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
+    private final AuthenticationService authenticationService;
     private final VerificationTokenRepository tokenRepository;
     private final EmailService emailService;
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationService.class);
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$@$!%*?&";
 
-    public JwtAuthenticationService(AuthenticationManager authenticationManager,
-                                    UserService userService,
+    public JwtAuthenticationService(UserService userService,
                                     PasswordEncoder encoder,
                                     JwtUtils jwtUtils,
-                                    VerificationTokenRepository tokenRepository,
+                                    AuthenticationService authenticationService, VerificationTokenRepository tokenRepository,
                                     EmailService emailService) {
-        this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.authenticationService = authenticationService;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
     }
 
 
     public JwtAuthResponse authenticateUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl userDetails = authenticationService.login(loginRequest);
 
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
@@ -112,6 +102,7 @@ public class JwtAuthenticationService {
                 .email(signUpRequest.getEmail())
                 .password(encoder.encode(signUpRequest.getPassword()))
                 .userRole(getRoles(signUpRequest.getRole()))
+                .provider(AuthProvider.APP)
                 .enabled(false)
                 .build();
 

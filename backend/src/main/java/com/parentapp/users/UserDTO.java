@@ -1,5 +1,6 @@
 package com.parentapp.users;
 
+import com.parentapp.auth.model.AuthProvider;
 import com.parentapp.auth.model.URole;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,6 +33,8 @@ public class UserDTO {
     private String password;
 
     private Set<URole> userRole;
+
+    private AuthProvider provider;
 
     @Size(max = 255)
     private String parentId;

@@ -29,6 +29,8 @@
         <json-path.version>2.5.0</json-path.version>
         <spring-boot-starter-security.version>2.5.6</spring-boot-starter-security.version>
         <servlet-api-version>6.0.0</servlet-api-version>
+        <google.api.client>1.32.1</google.api.client>
+        <spring.social.facebook>2.0.3.RELEASE</spring.social.facebook>
     </properties>
 
     <dependencies>
@@ -181,13 +183,12 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-boot-starter-security</artifactId>
             <version>${spring.boot.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
@@ -196,12 +197,21 @@
             <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>${google.api.client}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.restfb</groupId>
+            <artifactId>restfb</artifactId>
+            <version>2.27.1</version>
+        </dependency>
+        <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
             <version>1.12.10</version>
             <scope>compile</scope>
         </dependency>
-
     </dependencies>
 
 
@@ -213,6 +223,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
                 <configuration>
                     <mainClass>com.parentapp.ParentAssistApplication</mainClass>
                     <excludes>

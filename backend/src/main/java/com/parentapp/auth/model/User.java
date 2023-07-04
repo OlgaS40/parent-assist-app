@@ -40,6 +40,10 @@ public class User {
     private String password;
 
     @Column
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    @Column
     private boolean enabled;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -1,14 +1,15 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {SignUpRequest} from "../shared/model/signUpRequest";
 import {LoginRequest} from "../shared/model/loginRequest";
-import {FormBuilder, FormGroup, Validators, ɵFormGroupValue, ɵTypedOrUntyped} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ToastrService} from "ngx-toastr";
 import {Role} from "../shared/model/user";
 import {AuthService} from "../shared/service/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {first} from "rxjs/operators";
-import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
 import {ForgotPasswordRequest} from "../shared/model/forgotPasswordRequest";
+import {FacebookLoginProvider, SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
+import {Oauth2SignInUpRequest} from "../shared/model/oauth2SignInUpRequest";
 
 @Component({
   selector: 'app-auth',
@@ -16,6 +17,7 @@ import {ForgotPasswordRequest} from "../shared/model/forgotPasswordRequest";
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent implements OnInit {
+
   signUpForm: FormGroup = new FormGroup({});
   loginForm: FormGroup = new FormGroup({});
   forgotPasswordForm: FormGroup = new FormGroup({});
@@ -29,10 +31,16 @@ export class AuthComponent implements OnInit {
   isForgotPasswordSubmit: boolean = false;
   loginStatusError: boolean = false;
   keepMeSignInStatus: boolean = false;
+  socialUser: SocialUser = new SocialUser();
+  loggedIn: boolean = false;
+  checkedTab: string = 'tab-1';
+  isGoogleSignIn: boolean = false;
+  isGoogleSignUp: boolean = false;
 
   constructor(private builder: FormBuilder, private toastr: ToastrService,
               private service: AuthService,
-              private route: ActivatedRoute, private router: Router
+              private route: ActivatedRoute, private router: Router,
+              private socialAuthService: SocialAuthService
   ) {
   }
 
@@ -46,17 +54,24 @@ export class AuthComponent implements OnInit {
       email: this.builder.control('', Validators.compose([Validators.required, Validators.email]))
     })
 
+    this.socialAuthService.authState.subscribe((user) => {
+      this.socialUser = user;
+      this.loggedIn = (user != null);
+      if (user != null) {
+        this.signWithGoogle(user);
+      }
+    });
+
     this.loginForm = this.builder.group({
       username: this.builder.control('', Validators.required),
       password: this.builder.control('', Validators.required),
       keepMeSignIn: this.builder.control(true)
-
-    })
+    });
 
     this.forgotPasswordForm = this.builder.group({
       username: this.builder.control('', Validators.required),
       email: this.builder.control('', Validators.compose([Validators.required, Validators.email]))
-    })
+    });
   }
 
   getErrorMessage(formName: string, field: string) {
@@ -138,7 +153,7 @@ export class AuthComponent implements OnInit {
         next: () => {
           this.loginStatusError = false;
           this.isLoginSubmit = false;
-          this.router.navigate(["/activities"]);
+          this.router.navigateByUrl("/activities").then();
         },
         error: (err) => {
           console.log(err);
@@ -148,10 +163,10 @@ export class AuthComponent implements OnInit {
             this.toastr.error('Please try again later.', 'Network connection error');
           } else if (err.error.exception === 'BadCredentialsException') {
             this.toastr.error('Credential you entered are wrong, try again.');
-          } else if(err.error === 'User is disabled') {
-            this.toastr.error('Please complete registration process, access the confirmation link from your email address.','User is still disabled!');
+          } else if (err.error === 'User is disabled') {
+            this.toastr.error('Please complete registration process, access the confirmation link from your email address.', 'User is still disabled!');
           } else {
-            this.toastr.error(err.error);
+            this.toastr.error(err.error.message);
           }
         },
       });
@@ -185,6 +200,7 @@ export class AuthComponent implements OnInit {
         error: err => {
           this.errorMessage = err.error.message;
           this.isSignUpFailed = true;
+          this.reset('signup');
           if (err.status === 0 && err.statusText === 'Unknown Error') {
             this.toastr.error('Please try again later.', 'Network connection error');
           } else if (err.status === 500) {
@@ -250,12 +266,137 @@ export class AuthComponent implements OnInit {
 
   private closeModal(modalId: string): void {
     const modal = document.getElementById(modalId);
-    const modalBackdrop = document.querySelector('.modal-backdrop') as HTMLElement;;
-    if(modal !== null){
+    const modalBackdrop = document.querySelector('.modal-backdrop') as HTMLElement;
+    ;
+    if (modal !== null) {
       modal.style.display = 'none';
     }
-    if(modalBackdrop !== null){
+    if (modalBackdrop !== null) {
       modalBackdrop.style.display = 'none';
     }
+  }
+
+  signInWithFB() {
+    this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID).then((socialUser) => {
+      console.log(socialUser);
+      const facebookSignInUpRequest: Oauth2SignInUpRequest = {
+        token: socialUser.authToken
+      };
+      this.service.loginWithFacebook(facebookSignInUpRequest).subscribe({
+          next: () => {
+            this.loginStatusError = false;
+            this.router.navigateByUrl("/activities").then();
+          },
+          error: (err) => {
+            console.log(err);
+            console.log("Invalid credentials");
+            this.loginStatusError = true;
+            if (err.status === 0 && err.statusText === 'Unknown Error') {
+              this.toastr.error('Please try again later.', 'Network connection error');
+            } else if (err.status === 500) {
+              this.toastr.error('Oops, smth went wrong. Please try again later.');
+            } else {
+              this.toastr.error(err.error.message);
+            }
+          },
+        }
+      );
+    });
+  }
+
+  signWithGoogle(socialUser: any) {
+    if (socialUser.provider === 'GOOGLE') {
+      const googleSignInUpRequest: Oauth2SignInUpRequest = {
+        token: socialUser.idToken
+      };
+
+      console.log(this.socialUser);
+      if (this.checkedTab === 'tab-2') {
+        console.log(googleSignInUpRequest);
+        console.log(this.checkedTab);
+        this.service.signUpWithGoogle(googleSignInUpRequest).subscribe({
+          next: data => {
+            console.log(data);
+            this.isSuccessful = true;
+            this.isSignUpFailed = false;
+            this.toastr.success("Please visit Sign In page to login", 'Registered Successfully!', {
+              positionClass: 'toast-top-center',
+              timeOut: 0,
+              extendedTimeOut: 0
+            });
+            this.router.navigate(['auth']);
+          },
+          error: err => {
+            this.errorMessage = err.error.message;
+            this.isSignUpFailed = true;
+            if (err.status === 0 && err.statusText === 'Unknown Error') {
+              this.toastr.error('Please try again later.', 'Network connection error');
+            } else if (err.status === 500) {
+              this.toastr.error('Oops, smth went wrong. Please try again later.');
+            } else {
+              this.toastr.error(this.errorMessage);
+            }
+          },
+        })
+      } else if (this.checkedTab === 'tab-1') {
+        console.log(this.checkedTab);
+        this.service.loginWithGoogle(googleSignInUpRequest).subscribe({
+            next: () => {
+              console.log("is logged in");
+              this.loginStatusError = false;
+              this.router.navigateByUrl("/activities").then();
+            },
+            error: (err) => {
+              console.log(err);
+              console.log("Invalid credentials");
+              this.loginStatusError = true;
+              if (err.status === 0 && err.statusText === 'Unknown Error') {
+                this.toastr.error('Please try again later.', 'Network connection error');
+              } else if (err.status === 500) {
+                this.toastr.error('Oops, smth went wrong. Please try again later.');
+              } else {
+                this.toastr.error(err.error.message);
+              }
+            },
+          }
+        );
+      }
+    }
+  }
+
+  signUpWithFB() {
+    this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID).then((socialUser) => {
+      this.registerUserWithFB(socialUser);
+    });
+  }
+
+  private registerUserWithFB(socialUser: SocialUser) {
+    const facebookSignInUpRequest: Oauth2SignInUpRequest = {
+      token: socialUser.authToken
+    };
+    this.service.signUpWithFacebook(facebookSignInUpRequest).subscribe({
+      next: data => {
+        console.log(data);
+        this.isSuccessful = true;
+        this.isSignUpFailed = false;
+        this.toastr.success("Please visit Sign In page to login", 'Registered Successfully!', {
+          positionClass: 'toast-top-center',
+          timeOut: 0,
+          extendedTimeOut: 0
+        });
+        this.router.navigate(['auth']).then();
+      },
+      error: err => {
+        this.errorMessage = err.error.message;
+        this.isSignUpFailed = true;
+        if (err.status === 0 && err.statusText === 'Unknown Error') {
+          this.toastr.error('Please try again later.', 'Network connection error');
+        } else if (err.status === 500) {
+          this.toastr.error('Oops, smth went wrong. Please try again later.');
+        } else {
+          this.toastr.error(this.errorMessage);
+        }
+      },
+    });
   }
 }
