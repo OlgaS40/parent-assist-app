@@ -201,6 +201,7 @@ export class AuthComponent implements OnInit {
           this.errorMessage = err.error.message;
           this.isSignUpFailed = true;
           this.reset('signup');
+          this.isSignUpSubmit = false;
           if (err.status === 0 && err.statusText === 'Unknown Error') {
             this.toastr.error('Please try again later.', 'Network connection error');
           } else if (err.status === 500) {

@@ -15,21 +15,21 @@ import {Oauth2SignInUpRequest} from "../model/oauth2SignInUpRequest";
 })
 export class AuthService {
 
-  public user: Observable<User> | undefined;
+  public user: Observable<User | null> | undefined;
   isLoggedIn = false;
-  private userSubject!: BehaviorSubject<User>;
+  private userSubject!: BehaviorSubject<User | null>;
 
   constructor(private router: Router, private _http: HttpClient) {
     const user = localStorage.getItem('user');
     if (user !== null) {
-      this.userSubject = new BehaviorSubject<User>(
+      this.userSubject = new BehaviorSubject<User | null>(
         (this.user = JSON.parse(localStorage.getItem("user") ?? ''))
       );
       this.user = this.userSubject.asObservable();
     }
   }
 
-  public get userValue(): User {
+  public get userValue(): User | null {
     return this.userSubject.value;
   }
 
@@ -48,12 +48,13 @@ export class AuthService {
   signUpWithGoogle(googleSignUpRequest: Oauth2SignInUpRequest) {
     return this._http.post(`${environment.apiUrl}auth/signup/google`, googleSignUpRequest).pipe(
       map(
-        response =>{
+        response => {
           return response;
         }
       )
     )
   }
+
   signUpWithFacebook(facebookSignUpRequest: Oauth2SignInUpRequest) {
     return this._http.post(`${environment.apiUrl}auth/signup/facebook`, facebookSignUpRequest);
   }
@@ -62,11 +63,11 @@ export class AuthService {
     return this._http.post<User>(`${environment.apiUrl}auth/signin`, loginRequest).pipe(
       map((user) => {
         if (keepMeSignIn) {
-          localStorage.setItem("token", JSON.stringify(user.token));
+          localStorage.setItem("user", JSON.stringify(user));
           if (this.userSubject !== undefined) {
             this.userSubject.next(user);
           } else {
-            this.userSubject = new BehaviorSubject<User>(user);
+            this.userSubject = new BehaviorSubject<User | null>(user);
           }
         }
         this.isLoggedIn = true
@@ -78,17 +79,28 @@ export class AuthService {
   loginWithGoogle(googleSignInUpRequest: Oauth2SignInUpRequest) {
     return this._http.post<User>(`${environment.apiUrl}auth/signin/google`, googleSignInUpRequest).pipe(
       map((user) => {
-          localStorage.setItem("token", JSON.stringify(user.token));
+          localStorage.setItem("user", JSON.stringify(user));
+          if (this.userSubject !== undefined) {
+            this.userSubject.next(user);
+          } else {
+            this.userSubject = new BehaviorSubject<User | null>(user);
+          }
           this.isLoggedIn = true
           return user;
         }
       )
     )
   }
+
   loginWithFacebook(facebookLoginRequest: Oauth2SignInUpRequest) {
     return this._http.post<User>(`${environment.apiUrl}auth/signin/facebook`, facebookLoginRequest).pipe(
       map((user) => {
-          localStorage.setItem("token", JSON.stringify(user.token));
+          localStorage.setItem("user", JSON.stringify(user));
+          if (this.userSubject !== undefined) {
+            this.userSubject.next(user);
+          } else {
+            this.userSubject = new BehaviorSubject<User | null>(user);
+          }
           this.isLoggedIn = true
           return user;
         }
@@ -99,7 +111,8 @@ export class AuthService {
   logout(): any {
     localStorage.removeItem("user");
     this.isLoggedIn = false;
-    this.router.navigate(['/']);
+    this.userSubject.next(null);
+    this.router.navigate(['/']).then();
   }
 
   forgotPassword(forgotPasswordRequest: ForgotPasswordRequest) {
@@ -119,7 +132,7 @@ export class AuthService {
     return this._http.put(`${environment.apiUrl}/user/${id}`, params).pipe(
       map((x) => {
         // update stored user if the logged in user updated their own record
-        if (id == this.userValue.id) {
+        if (this.userValue !== null && id == this.userValue.id) {
           // update local storage
           const user = {...this.userValue, ...params};
           localStorage.setItem("user", JSON.stringify(user));
@@ -136,7 +149,7 @@ export class AuthService {
     return this._http.delete(`${environment.apiUrl}/user/${id}`).pipe(
       map((x) => {
         // auto logout if the logged in user deleted their own record
-        if (id == this.userValue.id) {
+        if (this.userValue !== null && id == this.userValue.id) {
           this.logout();
         }
         return x;
