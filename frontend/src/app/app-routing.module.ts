@@ -16,6 +16,7 @@ import {AppPageComponent} from "./pages/app-page/app-page.component";
 import {AuthComponent} from "./auth/auth.component";
 import {VerificationComponent} from "./auth/verification/verification.component";
 import {authGuard} from "./guard/auth.guard";
+import {ProfileComponent} from "./profile/profile.component";
 
 const routes: Routes = [
   {path: '', component: LandingPageComponent},
@@ -23,6 +24,7 @@ const routes: Routes = [
   {path: 'blog', component: BlogComponent},
   {path: 'auth', component: AuthComponent},
   {path: 'auth/verify', component: VerificationComponent},
+  {path: 'profile', component: ProfileComponent, canActivate: [authGuard]},
   {path: 'activities', component: ActivitiesComponent, canActivate: [authGuard]},
   {path: 'material&toys', component: MaterialToysComponent, canActivate: [authGuard]},
   {path: 'milestones', component: MilestonesComponent, canActivate: [authGuard]},

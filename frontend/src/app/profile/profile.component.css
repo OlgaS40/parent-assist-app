@@ -1,0 +1,79 @@
+app-navbar-profile{
+  position: fixed;
+  width: 100%;
+  z-index: 2;
+  top: 0px;
+}
+
+main{
+  position: absolute;
+  width: 100%;
+  top: 90px;
+  z-index: 1;
+}
+
+app-side-nav{
+  position: fixed;
+  left: 0rem;
+  width: 90px;
+}
+
+.section-title{
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.section-title .line {
+  background-color: var(--c-brand);
+  margin: 16px auto 24px auto;
+}
+
+/* FEATURES */
+.parentAssistApp {
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.parentAssistApp::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  background: rgba(var(--c-brand-rgb), 0.2);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transition: var(--transition);
+}
+
+
+.parentAssistApp:hover::after {
+  width: 100%;
+  height: 100%;
+  background: var(--c-brand);
+  z-index: -1;
+}
+
+.parentAssistApp:hover h5,
+.parentAssistApp:hover p {
+  color: white;
+}
+
+.parentAssistApp:hover .iconbox {
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+}
+
+/* ICONBOX */
+.iconbox {
+  width: 70px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--c-brand-rgb), 0.1);
+  color: var(--c-brand);
+  font-size: 34px;
+  flex: none;
+}
+

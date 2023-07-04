@@ -1,0 +1,56 @@
+h4{
+  color: white;
+}
+.navbar {
+  background-color: var(--c-brand);
+  justify-content: space-between;
+  display: flex;
+}
+
+.navbar-brand{
+  justify-content: center;
+}
+
+.navbar-link {
+
+}
+
+/* LOGO */
+.logo-image {
+  width: 140px;
+  order: 1; /* Add this line to change the order */
+}
+
+.btn {
+  margin-right: 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.btn-brand {
+  background-color: var(--c-brand);
+  border-color: var(--c-brand);
+  color: white;
+}
+
+.btn-brand:hover {
+  background-color: var(--c-brand-light);
+  border-color: var(--c-brand-light);
+  color: black;
+  font-size: 16px;
+}
+
+.dropdown-menu-dark {
+  background-color: var(--c-brand);
+  border-color: var(--c-brand);
+  color: white;
+}
+
+.dropdown-item:hover {
+  background-color: var(--c-brand-light);
+  border-color: var(--c-brand-light);
+  color: black;
+  font-size: 16px;
+}

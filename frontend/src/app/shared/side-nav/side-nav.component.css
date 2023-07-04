@@ -1,0 +1,40 @@
+.nav-item{
+  background: rgba(var(--c-brand-rgb), 0.1);
+}
+.iconbox {
+  width: 50px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-brand);
+  font-size: 34px;
+  flex: none;
+}
+
+.nav-item:hover {
+  background-color: var(--c-brand);
+}
+
+.nav-item:hover .iconbox{
+  color: white;
+}
+
+.dropdown{
+  background: rgba(var(--c-brand-rgb), 0.1);
+  border-radius: 50%;
+  width: 80px; /* Adjust the width as needed */
+  height: 80px;
+}
+
+.dropdown:hover {
+  background-color: var(--c-brand);
+}
+
+.dropdown:hover .iconbox{
+  color: white;
+}
+
+.bi{
+  margin-right: 10px;
+}

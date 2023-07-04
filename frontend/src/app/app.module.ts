@@ -45,6 +45,9 @@ import {
   GoogleLoginProvider,
   FacebookLoginProvider
 } from '@abacritt/angularx-social-login';
+import {ProfileComponent} from "./profile/profile.component";
+import { NavbarProfileComponent } from './shared/navbar-profile/navbar-profile.component';
+import { SideNavComponent } from './shared/side-nav/side-nav.component';
 
 
 
@@ -77,7 +80,10 @@ import {
     AppPageComponent,
     AuthComponent,
     VerificationComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    ProfileComponent,
+    NavbarProfileComponent,
+    SideNavComponent
   ],
   imports: [
     BrowserModule,
