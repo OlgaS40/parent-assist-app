@@ -43,3 +43,7 @@
   color: black;
   font-size: 16px;
 }
+
+.btn-outline-danger{
+  padding: 10px 24px;
+}
