@@ -58,6 +58,12 @@ public class UserService {
     }
 
     @Transactional
+    public User getByEmail(String email) {
+        return userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Transactional
     public String create(final UserDTO userDTO) {
         final User user = new User();
         mapToEntity(userDTO, user);
@@ -103,6 +109,7 @@ public class UserService {
         userDTO.setUserRole(user.getUserRole() == null ? null : user.getUserRole().stream()
                 .map(Role::getName)
                 .collect(Collectors.toSet()));
+        userDTO.setProvider(user.getProvider());
         userDTO.setParentId(user.getParent() == null ? null : user.getParent().getId());
         userDTO.setEnabled(user.isEnabled());
         return userDTO;
@@ -122,6 +129,7 @@ public class UserService {
         user.setUserRole(new HashSet<>(userRoles));
         final Parent parentId = userDTO.getParentId() == null ? null : parentRepository.findById(userDTO.getParentId())
                 .orElseThrow(() -> new NotFoundException("parentId not found"));
+        user.setProvider(userDTO.getProvider());
         user.setParent(parentId);
         user.setEnabled(userDTO.isEnabled());
         return user;

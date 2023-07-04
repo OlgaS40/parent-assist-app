@@ -1,4 +1,4 @@
-import {HostListener, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable, throwError} from "rxjs";
 import {User} from "../model/user";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -8,6 +8,7 @@ import {environment} from "../../../environments/environment";
 import {SignUpRequest} from "../model/signUpRequest";
 import {LoginRequest} from "../model/loginRequest";
 import {ForgotPasswordRequest} from "../model/forgotPasswordRequest";
+import {Oauth2SignInUpRequest} from "../model/oauth2SignInUpRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -44,12 +45,25 @@ export class AuthService {
     return this._http.get(`${environment.apiUrl}auth/signup/verify?code=${verificationCode}`);
   }
 
+  signUpWithGoogle(googleSignUpRequest: Oauth2SignInUpRequest) {
+    return this._http.post(`${environment.apiUrl}auth/signup/google`, googleSignUpRequest).pipe(
+      map(
+        response =>{
+          return response;
+        }
+      )
+    )
+  }
+  signUpWithFacebook(facebookSignUpRequest: Oauth2SignInUpRequest) {
+    return this._http.post(`${environment.apiUrl}auth/signup/facebook`, facebookSignUpRequest);
+  }
+
   login(loginRequest: LoginRequest, keepMeSignIn: boolean): Observable<User> {
     return this._http.post<User>(`${environment.apiUrl}auth/signin`, loginRequest).pipe(
       map((user) => {
         if (keepMeSignIn) {
-          localStorage.setItem("user", JSON.stringify(user));
-          if(this.userSubject !== undefined){
+          localStorage.setItem("token", JSON.stringify(user.token));
+          if (this.userSubject !== undefined) {
             this.userSubject.next(user);
           } else {
             this.userSubject = new BehaviorSubject<User>(user);
@@ -61,11 +75,33 @@ export class AuthService {
     );
   }
 
+  loginWithGoogle(googleSignInUpRequest: Oauth2SignInUpRequest) {
+    return this._http.post<User>(`${environment.apiUrl}auth/signin/google`, googleSignInUpRequest).pipe(
+      map((user) => {
+          localStorage.setItem("token", JSON.stringify(user.token));
+          this.isLoggedIn = true
+          return user;
+        }
+      )
+    )
+  }
+  loginWithFacebook(facebookLoginRequest: Oauth2SignInUpRequest) {
+    return this._http.post<User>(`${environment.apiUrl}auth/signin/facebook`, facebookLoginRequest).pipe(
+      map((user) => {
+          localStorage.setItem("token", JSON.stringify(user.token));
+          this.isLoggedIn = true
+          return user;
+        }
+      )
+    )
+  }
+
   logout(): any {
     localStorage.removeItem("user");
     this.isLoggedIn = false;
     this.router.navigate(['/']);
   }
+
   forgotPassword(forgotPasswordRequest: ForgotPasswordRequest) {
     return this._http.post(`${environment.apiUrl}auth/forgotPassword`, forgotPasswordRequest);
   }

@@ -39,7 +39,13 @@ import {ContactComponent} from './pages/contact/contact.component';
 import {AppPageComponent} from './pages/app-page/app-page.component';
 import {AuthComponent} from './auth/auth.component';
 import {VerificationComponent} from './auth/verification/verification.component';
-import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import {ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import {SocialLoginModule, SocialAuthServiceConfig, GoogleSigninButtonModule} from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  FacebookLoginProvider
+} from '@abacritt/angularx-social-login';
+
 
 
 @NgModule({
@@ -83,9 +89,33 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     HttpClientModule,
     MatIconModule,
     ToastrModule.forRoot(),
-    FormsModule
+    FormsModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '95826078971-vvra6s8onb3fucmui9pmuh85cdg8it7c.apps.googleusercontent.com'
+            )
+          },
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider('118127131239963')
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

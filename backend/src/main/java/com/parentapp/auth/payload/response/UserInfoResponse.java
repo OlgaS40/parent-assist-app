@@ -10,6 +10,7 @@ public class UserInfoResponse implements AuthResponse {
     private String id;
     private String username;
     private String email;
+    private String token;
     private List<String> roles;
 
     public UserInfoResponse(String id, String username, String email, List<String> roles) {
@@ -17,5 +18,8 @@ public class UserInfoResponse implements AuthResponse {
         this.username = username;
         this.email = email;
         this.roles = roles;
+    }
+    public UserInfoResponse(String token) {
+        this.token = token;
     }
 }
