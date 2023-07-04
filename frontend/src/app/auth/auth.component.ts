@@ -153,7 +153,7 @@ export class AuthComponent implements OnInit {
         next: () => {
           this.loginStatusError = false;
           this.isLoginSubmit = false;
-          this.router.navigateByUrl("/activities").then();
+          this.router.navigateByUrl("/profile").then();
         },
         error: (err) => {
           console.log(err);
@@ -286,7 +286,7 @@ export class AuthComponent implements OnInit {
       this.service.loginWithFacebook(facebookSignInUpRequest).subscribe({
           next: () => {
             this.loginStatusError = false;
-            this.router.navigateByUrl("/activities").then();
+            this.router.navigateByUrl("/profile").then();
           },
           error: (err) => {
             console.log(err);
@@ -345,7 +345,7 @@ export class AuthComponent implements OnInit {
             next: () => {
               console.log("is logged in");
               this.loginStatusError = false;
-              this.router.navigateByUrl("/activities").then();
+              this.router.navigateByUrl("/profile").then();
             },
             error: (err) => {
               console.log(err);
